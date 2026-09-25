@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -37,6 +37,12 @@ function AppleStoreApp() {
   const [lineupSubTab, setLineupSubTab] = useState('models'); // 'models' | 'accessories'
   const [selectedTradeIn, setSelectedTradeIn] = useState(TRADE_IN_DEVICES[4]); // iPhone 12 ($300)
   const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      document.title = 'Apple';
+    }
+  }, []);
 
   const insets = useSafeAreaInsets();
   const currentTheme = getTheme(isDarkMode);
