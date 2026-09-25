@@ -2,7 +2,7 @@
   <img src="public/apple-logo.png" width="96" height="96" alt="Apple Logo" />
 </p>
 
-<h1 align="center"> Apple Mobile — Apple — iPhone Hub</h1>
+<h1 align="center">Apple Mobile — Apple — iPhone Hub</h1>
 
 <p align="center">
   <strong>An authentic Apple Human Interface Guidelines (HIG)-inspired mobile application recreating the Apple Store iOS app experience.</strong>
