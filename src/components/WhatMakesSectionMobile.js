@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
   },
   ios16Image: {
     width: '100%',
-    height: 240,
-    maxWidth: 420,
+    aspectRatio: 870 / 428,
+    maxHeight: 240,
   },
   switchImage: {
     width: '100%',
-    height: 230,
-    maxWidth: 420,
+    aspectRatio: 675 / 357,
+    maxHeight: 240,
   },
 });
