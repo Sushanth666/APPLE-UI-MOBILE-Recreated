@@ -32,7 +32,7 @@ import BagScreen from './src/components/BagScreen';
 LogBox.ignoreLogs(['SafeAreaView has been deprecated']);
 
 function AppleStoreApp() {
-  const [isDarkMode, setIsDarkMode] = useState(true); // Apple Store Dark Mode by default
+  const [isDarkMode, setIsDarkMode] = useState(false); // Apple Store Light Mode by default
   const [activeTab, setActiveTab] = useState('discover'); // 'discover' | 'lineup' | 'compare' | 'bag'
   const [lineupSubTab, setLineupSubTab] = useState('models'); // 'models' | 'accessories'
   const [selectedTradeIn, setSelectedTradeIn] = useState(TRADE_IN_DEVICES[4]); // iPhone 12 ($300)
