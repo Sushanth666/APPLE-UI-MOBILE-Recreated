@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,9 @@ import {
   useWindowDimensions,
   Platform,
   LogBox,
+  Animated,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getTheme } from './src/theme';
@@ -37,11 +40,31 @@ function AppleStoreApp() {
   const [lineupSubTab, setLineupSubTab] = useState('models'); // 'models' | 'accessories'
   const [selectedTradeIn, setSelectedTradeIn] = useState(TRADE_IN_DEVICES[4]); // iPhone 12 ($300)
   const [cartItems, setCartItems] = useState([]);
+  const [toastItem, setToastItem] = useState(null);
+  const toastY = useRef(new Animated.Value(-120)).current;
 
   const insets = useSafeAreaInsets();
   const currentTheme = getTheme(isDarkMode);
   const colors = currentTheme.colors;
   const bagCount = cartItems.reduce((acc, it) => acc + (it.quantity || 1), 0);
+
+  const triggerToast = (item) => {
+    setToastItem(item);
+    Animated.sequence([
+      Animated.spring(toastY, {
+        toValue: Math.max(16, insets.top + 8),
+        tension: 140,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+      Animated.delay(2800),
+      Animated.timing(toastY, {
+        toValue: -120,
+        duration: 260,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setToastItem(null));
+  };
 
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
@@ -77,14 +100,7 @@ function AppleStoreApp() {
       ];
     });
 
-    Alert.alert(
-      'Added to Bag 🛍️',
-      `${item.name} (${item.selectedColor ? item.selectedColor.name : 'Standard'}) is now in your Apple Bag.`,
-      [
-        { text: 'Keep Browsing', style: 'cancel' },
-        { text: 'View Bag', onPress: () => setActiveTab('bag') },
-      ]
-    );
+    triggerToast(item);
   };
 
   // Add Accessory to Bag
@@ -112,10 +128,7 @@ function AppleStoreApp() {
       ];
     });
 
-    Alert.alert('Added to Bag 🛍️', `${item.name} has been added to your Apple Bag.`, [
-      { text: 'Continue', style: 'cancel' },
-      { text: 'View Bag', onPress: () => setActiveTab('bag') },
-    ]);
+    triggerToast(item);
   };
 
   // Stepper updates
@@ -374,6 +387,47 @@ function AppleStoreApp() {
           isDarkMode={isDarkMode}
           bottomInset={insets.bottom}
         />
+
+        {/* Animated Dynamic Island / Cupertino Bag Toast */}
+        {toastItem && (
+          <Animated.View
+            style={[
+              styles.floatingToast,
+              {
+                transform: [{ translateY: toastY }],
+              },
+            ]}
+          >
+            <TouchableOpacity
+              style={[
+                styles.toastCard,
+                {
+                  backgroundColor: isDarkMode ? '#1c1c1e' : '#ffffff',
+                  borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
+                },
+              ]}
+              onPress={() => {
+                setActiveTab('bag');
+                setToastItem(null);
+              }}
+              activeOpacity={0.9}
+            >
+              <View style={styles.toastCheckCircle}>
+                <Text style={styles.toastCheckMark}>✓</Text>
+              </View>
+              <View style={styles.toastTextWrap}>
+                <Text style={[styles.toastTitle, { color: colors.label }]}>Added to Bag</Text>
+                <Text
+                  style={[styles.toastSubtitle, { color: colors.secondaryLabel }]}
+                  numberOfLines={1}
+                >
+                  {toastItem.name} {toastItem.selectedColor ? `• ${toastItem.selectedColor.name}` : ''}
+                </Text>
+              </View>
+              <Text style={styles.toastViewBagText}>View Bag ›</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
       </View>
     </View>
   );
@@ -397,6 +451,7 @@ const styles = StyleSheet.create({
   appFrame: {
     flex: 1,
     width: '100%',
+    position: 'relative',
   },
   mainContent: {
     flex: 1,
@@ -413,5 +468,60 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 6,
+  },
+  floatingToast: {
+    position: 'absolute',
+    top: 0,
+    left: 16,
+    right: 16,
+    zIndex: 999,
+    alignItems: 'center',
+  },
+  toastCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 420,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 22,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 8,
+  },
+  toastCheckCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#34c759',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  toastCheckMark: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  toastTextWrap: {
+    flex: 1,
+  },
+  toastTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+  },
+  toastSubtitle: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  toastViewBagText: {
+    color: '#0071e3',
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });

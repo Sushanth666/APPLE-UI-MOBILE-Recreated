@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Platform } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Platform, Animated } from 'react-native';
 import Svg, { Path, Circle, Rect, Line } from 'react-native-svg';
 
 function DiscoverIcon({ size = 22, color = '#8e8e93' }) {
@@ -46,6 +46,49 @@ function BagNavIcon({ size = 22, color = '#8e8e93' }) {
   );
 }
 
+function AnimatedTabItem({ tab, isActive, activeColor, inactiveColor, onPress }) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 0.88, duration: 90, useNativeDriver: true }),
+      Animated.spring(scaleAnim, { toValue: 1, tension: 200, friction: 6, useNativeDriver: true }),
+    ]).start();
+    onPress(tab.id);
+  };
+
+  const TabIcon = tab.Icon;
+  const color = isActive ? activeColor : inactiveColor;
+
+  return (
+    <TouchableOpacity
+      style={styles.tabButton}
+      onPress={handlePress}
+      activeOpacity={0.8}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isActive }}
+      accessibilityLabel={tab.label}
+    >
+      <Animated.View style={[styles.iconWrap, { transform: [{ scale: scaleAnim }] }]}>
+        <TabIcon size={23} color={color} />
+        {tab.badgeComponent}
+      </Animated.View>
+      <Text
+        style={[
+          styles.tabLabel,
+          {
+            color,
+            fontWeight: isActive ? '600' : '400',
+          },
+        ]}
+      >
+        {tab.label}
+      </Text>
+      {isActive && <View style={[styles.activeDot, { backgroundColor: activeColor }]} />}
+    </TouchableOpacity>
+  );
+}
+
 export default function BottomTabBar({
   activeTab,
   onTabPress,
@@ -53,11 +96,32 @@ export default function BottomTabBar({
   isDarkMode = true,
   bottomInset = 0,
 }) {
+  const badgeAnim = useRef(new Animated.Value(1)).current;
+  const prevCount = useRef(bagCount);
+
+  useEffect(() => {
+    if (bagCount > 0 && bagCount !== prevCount.current) {
+      Animated.sequence([
+        Animated.spring(badgeAnim, { toValue: 1.4, tension: 220, friction: 4, useNativeDriver: true }),
+        Animated.spring(badgeAnim, { toValue: 1, tension: 160, friction: 6, useNativeDriver: true }),
+      ]).start();
+    }
+    prevCount.current = bagCount;
+  }, [bagCount]);
+
+  const badgeComponent = bagCount > 0 ? (
+    <Animated.View style={[styles.badge, { transform: [{ scale: badgeAnim }] }]}>
+      <Text style={styles.badgeText}>
+        {bagCount > 99 ? '99+' : bagCount}
+      </Text>
+    </Animated.View>
+  ) : null;
+
   const tabs = [
     { id: 'discover', label: 'Discover', Icon: DiscoverIcon },
     { id: 'lineup', label: 'iPhone', Icon: PhoneIcon },
     { id: 'compare', label: 'Compare', Icon: CompareIcon },
-    { id: 'bag', label: 'Bag', Icon: BagNavIcon, badge: bagCount },
+    { id: 'bag', label: 'Bag', Icon: BagNavIcon, badgeComponent },
   ];
 
   const bgColor = isDarkMode ? 'rgba(28, 28, 30, 0.96)' : 'rgba(255, 255, 255, 0.96)';
@@ -78,45 +142,16 @@ export default function BottomTabBar({
       ]}
     >
       <View style={styles.tabRow}>
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          const color = isActive ? activeColor : inactiveColor;
-          const TabIcon = tab.Icon;
-
-          return (
-            <TouchableOpacity
-              key={tab.id}
-              style={styles.tabButton}
-              onPress={() => onTabPress(tab.id)}
-              activeOpacity={0.7}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
-              accessibilityLabel={tab.label}
-            >
-              <View style={styles.iconWrap}>
-                <TabIcon size={23} color={color} />
-                {tab.badge > 0 && (
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>
-                      {tab.badge > 99 ? '99+' : tab.badge}
-                    </Text>
-                  </View>
-                )}
-              </View>
-              <Text
-                style={[
-                  styles.tabLabel,
-                  {
-                    color,
-                    fontWeight: isActive ? '600' : '400',
-                  },
-                ]}
-              >
-                {tab.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+        {tabs.map((tab) => (
+          <AnimatedTabItem
+            key={tab.id}
+            tab={tab}
+            isActive={activeTab === tab.id}
+            activeColor={activeColor}
+            inactiveColor={inactiveColor}
+            onPress={onTabPress}
+          />
+        ))}
       </View>
     </View>
   );
@@ -175,5 +210,11 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 10,
     fontWeight: '700',
+  },
+  activeDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    marginTop: 2,
   },
 });

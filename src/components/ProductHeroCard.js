@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Animated } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import { theme } from '../theme';
 import DynamicIslandPreview from './DynamicIslandPreview';
 
@@ -13,6 +13,29 @@ export default function ProductHeroCard({
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const imageAnim = useRef(new Animated.Value(1)).current;
   const buyButtonScale = useRef(new Animated.Value(1)).current;
+  const floatY = useRef(new Animated.Value(0)).current;
+  const swatchScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatY, {
+          toValue: -6,
+          duration: 2400,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatY, {
+          toValue: 0,
+          duration: 2400,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
 
   const isDark = isDarkMode || model.theme === 'dark';
   const currentColor = model.colors[selectedColorIndex] || model.colors[0];
@@ -22,7 +45,7 @@ export default function ProductHeroCard({
     Animated.sequence([
       Animated.timing(imageAnim, {
         toValue: 0.35,
-        duration: 100,
+        duration: 90,
         useNativeDriver: true,
       }),
       Animated.timing(imageAnim, {
@@ -31,6 +54,12 @@ export default function ProductHeroCard({
         useNativeDriver: true,
       }),
     ]).start();
+
+    Animated.sequence([
+      Animated.spring(swatchScale, { toValue: 1.28, tension: 240, friction: 4, useNativeDriver: true }),
+      Animated.spring(swatchScale, { toValue: 1, tension: 180, friction: 6, useNativeDriver: true }),
+    ]).start();
+
     setSelectedColorIndex(idx);
   };
 
@@ -93,7 +122,7 @@ export default function ProductHeroCard({
         )}
       </View>
 
-      {/* Device Image with Crossfade Transition */}
+      {/* Device Image with Floating Breathing & Crossfade Transition */}
       <View style={styles.imageContainer}>
         <Animated.View
           style={{
@@ -101,6 +130,7 @@ export default function ProductHeroCard({
             height: '100%',
             opacity: imageAnim,
             transform: [
+              { translateY: floatY },
               {
                 scale: imageAnim.interpolate({
                   inputRange: [0.35, 1],
@@ -118,25 +148,32 @@ export default function ProductHeroCard({
         </Animated.View>
       </View>
 
-      {/* Color Swatches */}
+      {/* Color Swatches with Spring Pop */}
       <View style={styles.swatchContainer}>
         <Text style={[styles.colorNameText, isDark ? styles.subtextDark : styles.subtextLight]}>
           {currentColor.name}
         </Text>
         <View style={styles.swatchRow}>
-          {model.colors.map((c, idx) => (
-            <TouchableOpacity
-              key={c.name}
-              style={[
-                styles.swatchDot,
-                { backgroundColor: c.hex },
-                selectedColorIndex === idx && styles.swatchDotActive,
-              ]}
-              onPress={() => handleSelectColor(idx)}
-              activeOpacity={0.8}
-              accessibilityLabel={c.name}
-            />
-          ))}
+          {model.colors.map((c, idx) => {
+            const isSelected = selectedColorIndex === idx;
+            return (
+              <TouchableOpacity
+                key={c.name}
+                onPress={() => handleSelectColor(idx)}
+                activeOpacity={0.8}
+                accessibilityLabel={c.name}
+              >
+                <Animated.View
+                  style={[
+                    styles.swatchDot,
+                    { backgroundColor: c.hex },
+                    isSelected && styles.swatchDotActive,
+                    isSelected && { transform: [{ scale: swatchScale }] },
+                  ]}
+                />
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
 

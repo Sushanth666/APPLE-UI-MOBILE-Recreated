@@ -1,11 +1,34 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Animated, Easing } from 'react-native';
 import { IMAGES } from '../assets';
 import { getTheme } from '../theme';
 
 export default function GuidedTourCard({ onWatchPress, isDarkMode = true }) {
   const currentTheme = getTheme(isDarkMode);
   const colors = currentTheme.colors;
+  const radarAnim = useRef(new Animated.Value(1)).current;
+  const radarOpacity = useRef(new Animated.Value(0.7)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.parallel([
+        Animated.timing(radarAnim, {
+          toValue: 1.5,
+          duration: 1800,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(radarOpacity, {
+          toValue: 0,
+          duration: 1800,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
 
   return (
     <View
@@ -23,13 +46,24 @@ export default function GuidedTourCard({ onWatchPress, isDarkMode = true }) {
         <Text style={styles.title}>
           A Guided Tour of{'\n'}iPhone 14 & iPhone 14 Pro
         </Text>
-        <TouchableOpacity
-          style={styles.watchBtn}
-          onPress={onWatchPress}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.watchBtnText}>Watch the film ▶</Text>
-        </TouchableOpacity>
+        <View style={styles.btnWrapper}>
+          <Animated.View
+            style={[
+              styles.radarRing,
+              {
+                transform: [{ scale: radarAnim }],
+                opacity: radarOpacity,
+              },
+            ]}
+          />
+          <TouchableOpacity
+            style={styles.watchBtn}
+            onPress={onWatchPress}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.watchBtnText}>Watch the film ▶</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Bottom Media Photo: Presenter cleanly framed without text collision */}
@@ -84,6 +118,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
     width: '100%',
+  },
+  btnWrapper: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radarRing: {
+    position: 'absolute',
+    top: -4,
+    bottom: -4,
+    left: -4,
+    right: -4,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
   watchBtn: {
     backgroundColor: '#ffffff',
