@@ -33,6 +33,17 @@ export default function TradeInCalculator({ selectedDevice, onSelectDevice, isDa
     }
   }, [selectedDevice?.model]);
 
+  // Center selected device chip when dimensions are measured
+  useEffect(() => {
+    const idx = TRADE_IN_DEVICES.findIndex((d) => d.model === selectedDevice?.model);
+    if (idx >= 0 && maxScroll > 0) {
+      const itemEstimate = idx * 125;
+      const targetX = Math.max(0, Math.min(maxScroll, itemEstimate - containerWidth / 2 + 60));
+      scrollRef.current?.scrollTo({ x: targetX, animated: false });
+      setScrollX(targetX);
+    }
+  }, [containerWidth, contentWidth, selectedDevice?.model]);
+
   const maxScroll = Math.max(0, contentWidth - containerWidth);
   const canScrollLeft = scrollX > 10;
   const canScrollRight = maxScroll > 15 && scrollX < maxScroll - 10;

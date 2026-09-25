@@ -38,7 +38,9 @@ function AppleStoreApp() {
   const [isDarkMode, setIsDarkMode] = useState(false); // Apple Store Light Mode by default
   const [activeTab, setActiveTab] = useState('discover'); // 'discover' | 'lineup' | 'compare' | 'bag'
   const [lineupSubTab, setLineupSubTab] = useState('models'); // 'models' | 'accessories'
-  const [selectedTradeIn, setSelectedTradeIn] = useState(TRADE_IN_DEVICES[4]); // iPhone 12 ($300)
+  const [selectedTradeIn, setSelectedTradeIn] = useState(
+    TRADE_IN_DEVICES.find((d) => d.value === 0) || TRADE_IN_DEVICES[6]
+  ); // Default: Other / No Trade-in ($0)
   const [cartItems, setCartItems] = useState([]);
   const [toastItem, setToastItem] = useState(null);
   const toastY = useRef(new Animated.Value(-120)).current;
