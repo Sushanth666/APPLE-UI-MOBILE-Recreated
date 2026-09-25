@@ -18,6 +18,7 @@ export const IMAGES = {
   appleTvShows: require('../assets/images/apple-tv-shows.jpg'),
   musicThrowback: require('../assets/images/music-throwback.jpg'),
   musicGoodVibes: require('../assets/images/music-goodvibes.jpg'),
+  appleMusicCovers: require('../assets/images/apple-music-covers.png'),
   appleNewsMagazines: require('../assets/images/apple-news-magazines.png'),
   appleArcadeJoystick: require('../assets/images/apple-arcade-joystick.jpg'),
   appleFitnessWorkout: require('../assets/images/apple-fitness-workout.jpg'),

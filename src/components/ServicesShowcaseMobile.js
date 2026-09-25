@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import AppleLogo from './AppleLogo';
 import { SERVICES_ITEMS } from '../productData';
 import { IMAGES } from '../assets';
@@ -99,34 +98,10 @@ export default function ServicesShowcaseMobile({ onServicePress, isDarkMode = tr
 
               {/* Media Preview */}
               {isMusic ? (
-                /* Multi-cover carousel matching Apple Web: Pure Throwback, Chill Mix, Good Vibes */
-                <View style={styles.musicCoversRow}>
+                <View style={styles.musicMediaContainer}>
                   <Image
-                    source={IMAGES.musicThrowback}
-                    style={styles.flankCover}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.chillMixCard}>
-                    <Svg style={StyleSheet.absoluteFillObject} width="100%" height="100%">
-                      <Defs>
-                        <LinearGradient id="chillGradMobile" x1="0" y1="0" x2="1" y2="1">
-                          <Stop offset="0%" stopColor="#104366" />
-                          <Stop offset="45%" stopColor="#09597c" />
-                          <Stop offset="75%" stopColor="#0093a8" />
-                          <Stop offset="100%" stopColor="#18bb6b" />
-                        </LinearGradient>
-                      </Defs>
-                      <Rect width="100%" height="100%" rx={20} fill="url(#chillGradMobile)" />
-                    </Svg>
-                    <View style={styles.chillBrand}>
-                      <AppleLogo size={14} color="#ffffff" style={{ marginRight: 4 }} />
-                      <Text style={styles.chillBrandText}>Music</Text>
-                    </View>
-                    <Text style={styles.chillTitle}>Chill{'\n'}Mix</Text>
-                  </View>
-                  <Image
-                    source={IMAGES.musicGoodVibes}
-                    style={styles.flankCover}
+                    source={IMAGES.appleMusicCovers}
+                    style={styles.musicCoversImage}
                     resizeMode="cover"
                   />
                 </View>
@@ -287,54 +262,19 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   /* Apple Music multi-cover showcase matching Apple Web */
-  musicCoversRow: {
-    flexDirection: 'row',
+  musicMediaContainer: {
+    width: '100%',
+    minHeight: 180,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    overflow: 'hidden',
+    marginTop: 4,
+    marginBottom: 0,
+  },
+  musicCoversImage: {
     width: '100%',
-    overflow: 'hidden',
-    marginTop: 10,
-    paddingBottom: 22,
-  },
-  flankCover: {
-    width: 150,
-    height: 150,
+    aspectRatio: 747 / 377,
+    maxHeight: 220,
     borderRadius: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  chillMixCard: {
-    width: 165,
-    height: 165,
-    borderRadius: 20,
-    padding: 16,
-    justifyContent: 'space-between',
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 14,
-    elevation: 6,
-  },
-  chillBrand: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  chillBrandText: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: -0.2,
-  },
-  chillTitle: {
-    color: '#ffffff',
-    fontSize: 26,
-    fontWeight: '800',
-    lineHeight: 28,
-    letterSpacing: -0.5,
   },
 });
