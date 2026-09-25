@@ -6,7 +6,6 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import AppleLogo from './AppleLogo';

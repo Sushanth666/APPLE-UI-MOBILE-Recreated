@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Platform } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Platform } from 'react-native';
 import Svg, { Path, Circle, Rect, Line } from 'react-native-svg';
 
 function DiscoverIcon({ size = 22, color = '#8e8e93' }) {

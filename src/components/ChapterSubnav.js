@@ -50,7 +50,6 @@ export default function ChapterSubnav({ selectedId, onSelect, isDarkMode = true 
     let isDown = false;
     let startX = 0;
     let initialScroll = 0;
-    let dragged = false;
 
     const handleMouseDown = (e) => {
       // Only drag with primary left mouse button
@@ -58,15 +57,11 @@ export default function ChapterSubnav({ selectedId, onSelect, isDarkMode = true 
       isDown = true;
       startX = e.pageX;
       initialScroll = node.scrollLeft;
-      dragged = false;
     };
 
     const handleMouseMove = (e) => {
       if (!isDown) return;
       const delta = e.pageX - startX;
-      if (Math.abs(delta) > 4) {
-        dragged = true;
-      }
       node.scrollLeft = initialScroll - delta;
       setScrollX(node.scrollLeft);
     };

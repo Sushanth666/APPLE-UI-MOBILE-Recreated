@@ -1,10 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import AppleLogo from './AppleLogo';
 import { SERVICES_ITEMS } from '../productData';
 import { getTheme } from '../theme';
-
-const { width } = Dimensions.get('window');
 
 export default function ServicesShowcaseMobile({ onServicePress, isDarkMode = true }) {
   const currentTheme = getTheme(isDarkMode);

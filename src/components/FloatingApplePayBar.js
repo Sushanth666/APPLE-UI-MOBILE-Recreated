@@ -24,7 +24,9 @@ export default function FloatingApplePayBar({ selectedItem, onApplePayPress, onC
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      onClear && onClear();
+      if (onClear) {
+        onClear();
+      }
     });
   };
 

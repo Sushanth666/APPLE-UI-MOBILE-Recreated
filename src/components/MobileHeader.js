@@ -122,7 +122,9 @@ export default function MobileHeader({
       themeRotate.setValue(0);
     });
 
-    onToggleTheme && onToggleTheme();
+    if (onToggleTheme) {
+      onToggleTheme();
+    }
   };
 
   const rotateDeg = themeRotate.interpolate({
