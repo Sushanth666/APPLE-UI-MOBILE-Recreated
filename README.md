@@ -1,7 +1,17 @@
-#  Apple Mobile — Apple — iPhone Hub
+<p align="center">
+  <img src="public/apple-logo.png" width="96" height="96" alt="Apple Logo" />
+</p>
 
-> **Brief Project Summary**:  
-> `apple-mobile` is an authentic **Apple Human Interface Guidelines (HIG)**-inspired mobile application built with **React Native** and **Expo**. It recreates the tactile ergonomics, navigation flow, and visual polish of the native **Apple Store iOS App** on iOS, Android, and mobile web browsers—complete with a bottom tab bar, interactive shopping bag, and Apple Pay checkout.
+<h1 align="center"> Apple Mobile — Apple — iPhone Hub</h1>
+
+<p align="center">
+  <strong>An authentic Apple Human Interface Guidelines (HIG)-inspired mobile application recreating the Apple Store iOS app experience.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Sushanth666/APPLE-UI-MOBILE-Recreated">GitHub Repository</a> •
+  <a href="http://localhost:8081">Local Web Preview</a>
+</p>
 
 ---
 
