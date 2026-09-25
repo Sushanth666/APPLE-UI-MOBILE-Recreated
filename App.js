@@ -38,16 +38,16 @@ function AppleStoreApp() {
   const [selectedTradeIn, setSelectedTradeIn] = useState(TRADE_IN_DEVICES[4]); // iPhone 12 ($300)
   const [cartItems, setCartItems] = useState([]);
 
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      document.title = 'Apple';
-    }
-  }, []);
-
   const insets = useSafeAreaInsets();
   const currentTheme = getTheme(isDarkMode);
   const colors = currentTheme.colors;
   const bagCount = cartItems.reduce((acc, it) => acc + (it.quantity || 1), 0);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      document.title = 'Apple — iPhone Hub';
+    }
+  }, []);
 
   // Add iPhone to Bag
   const handleBuy = (item) => {
